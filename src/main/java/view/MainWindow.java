@@ -6,10 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import controller.EstudianteController;
 import controller.MateriaController;
 import controller.ProfesorController;
-import model.Estudiante;
 import model.Materia;
 import model.Profesor;
 
@@ -20,21 +18,23 @@ import javax.swing.JComboBox;
 import java.awt.Insets;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 
 public class MainWindow extends JFrame {
 
 	private JPanel contentPane;
-	private JComboBox<Materia> jcbMateria;
-	private JComboBox<Profesor> jcbProfesor;
-	private JButton btnActualizar;
 	private JPanel panel;
 	private JPanel panel_1;
-	private JButton btnGuardar;
-	private List<EstudiantePanel> p = new ArrayList<EstudiantePanel>();
+	private JListPanel jl = new JListPanel();
+	private JComboBox<Materia> jcbSubject;
+	private JComboBox<Profesor> jcbProfessor;
+	private JComboBox jcbNote;
+	private JButton btnUpdate;
+	private JButton btnSave;
+	private JLabel lblNewLabel_2;
 
 	/**
 	 * Carga la aplicación
@@ -57,12 +57,13 @@ public class MainWindow extends JFrame {
 	 */
 	public MainWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 500, 350);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
+//		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, 0.0};
 //		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0};
 //		gbl_contentPane.columnWeights = new double[]{1.0, 1.0, 0.0};
 //		gbl_contentPane.rowWeights = new double[]{0.0, 0.0};
@@ -85,14 +86,14 @@ public class MainWindow extends JFrame {
 		gbc_lblNewLabel.gridy = 0;
 		contentPane.add(lblNewLabel, gbc_lblNewLabel);
 		
-		jcbMateria = new JComboBox<Materia>();
-		GridBagConstraints gbc_jcbMateria = new GridBagConstraints();
-		gbc_jcbMateria.weightx = 1.0;
-		gbc_jcbMateria.insets = new Insets(0, 0, 5, 5);
-		gbc_jcbMateria.fill = GridBagConstraints.HORIZONTAL;
-		gbc_jcbMateria.gridx = 1;
-		gbc_jcbMateria.gridy = 0;
-		contentPane.add(jcbMateria, gbc_jcbMateria);
+		jcbSubject = new JComboBox<Materia>();
+		GridBagConstraints gbc_jcbSubject = new GridBagConstraints();
+		gbc_jcbSubject.weightx = 1.0;
+		gbc_jcbSubject.insets = new Insets(0, 0, 5, 5);
+		gbc_jcbSubject.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jcbSubject.gridx = 1;
+		gbc_jcbSubject.gridy = 0;
+		contentPane.add(jcbSubject, gbc_jcbSubject);
 		
 		JLabel lblNewLabel_1 = new JLabel("Profesor:");
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
@@ -102,54 +103,76 @@ public class MainWindow extends JFrame {
 		gbc_lblNewLabel_1.gridy = 1;
 		contentPane.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		
-		jcbProfesor = new JComboBox<Profesor>();
-		GridBagConstraints gbc_jcbProfesor = new GridBagConstraints();
-		gbc_jcbProfesor.insets = new Insets(0, 0, 5, 5);
-		gbc_jcbProfesor.fill = GridBagConstraints.HORIZONTAL;
-		gbc_jcbProfesor.gridx = 1;
-		gbc_jcbProfesor.gridy = 1;
-		contentPane.add(jcbProfesor, gbc_jcbProfesor);
+		jcbProfessor = new JComboBox<Profesor>();
+		GridBagConstraints gbc_jcbProfessor = new GridBagConstraints();
+		gbc_jcbProfessor.insets = new Insets(0, 0, 5, 5);
+		gbc_jcbProfessor.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jcbProfessor.gridx = 1;
+		gbc_jcbProfessor.gridy = 1;
+		contentPane.add(jcbProfessor, gbc_jcbProfessor);
 		
-		btnActualizar = new JButton("Actualizar alumnado");
-		btnActualizar.addActionListener(new ActionListener() {
+		lblNewLabel_2 = new JLabel("Nota:");
+		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
+		gbc_lblNewLabel_2.anchor = GridBagConstraints.EAST;
+		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_2.gridx = 0;
+		gbc_lblNewLabel_2.gridy = 2;
+		contentPane.add(lblNewLabel_2, gbc_lblNewLabel_2);
+		
+		jcbNote = new JComboBox();
+		jcbNote.setModel(new DefaultComboBoxModel(new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}));
+		GridBagConstraints gbc_jcbNote = new GridBagConstraints();
+		gbc_jcbNote.insets = new Insets(0, 0, 5, 5);
+		gbc_jcbNote.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jcbNote.gridx = 1;
+		gbc_jcbNote.gridy = 2;
+		contentPane.add(jcbNote, gbc_jcbNote);
+		
+		btnUpdate = new JButton("Actualizar alumnado");
+		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				createEstudiantePanels();
+				jl.deleteAll();
 			}
 		});
-		GridBagConstraints gbc_btnActualizar = new GridBagConstraints();
-		gbc_btnActualizar.insets = new Insets(0, 0, 5, 0);
-		gbc_btnActualizar.gridx = 2;
-		gbc_btnActualizar.gridy = 1;
-		contentPane.add(btnActualizar, gbc_btnActualizar);
+		GridBagConstraints gbc_btnUpdate = new GridBagConstraints();
+		gbc_btnUpdate.anchor = GridBagConstraints.EAST;
+		gbc_btnUpdate.gridwidth = 2;
+		gbc_btnUpdate.insets = new Insets(0, 0, 5, 5);
+		gbc_btnUpdate.gridx = 0;
+		gbc_btnUpdate.gridy = 3;
+		contentPane.add(btnUpdate, gbc_btnUpdate);
 		
 		panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.insets = new Insets(0, 0, 5, 0);
 		gbc_panel.gridwidth = 3;
-		gbc_panel.insets = new Insets(0, 0, 0, 5);
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 2;
+		gbc_panel.gridy = 4;
 		contentPane.add(panel, gbc_panel);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.add(jl);
+		panel.repaint();
+		panel.revalidate();
 		
 		panel_1 = new JPanel();
 		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
 		gbc_panel_1.weighty = 1.0;
 		gbc_panel_1.anchor = GridBagConstraints.EAST;
 		gbc_panel_1.gridwidth = 3;
-		gbc_panel_1.insets = new Insets(0, 0, 0, 5);
 		gbc_panel_1.fill = GridBagConstraints.VERTICAL;
 		gbc_panel_1.gridx = 0;
-		gbc_panel_1.gridy = 3;
+		gbc_panel_1.gridy = 5;
 		contentPane.add(panel_1, gbc_panel_1);
 		
-		btnGuardar = new JButton("Guardar");
-		btnGuardar.addActionListener(new ActionListener() {
+		btnSave = new JButton("Guardar");
+		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				save();
+				jl.save((Profesor) jcbProfessor.getSelectedItem(), (Materia) jcbSubject.getSelectedItem(),
+						Integer.parseInt((String) jcbNote.getSelectedItem()));
 			}
 		});
-		panel_1.add(btnGuardar);
+		panel_1.add(btnSave);
 		
 		getMaterias();
 		getProfesores();
@@ -159,10 +182,10 @@ public class MainWindow extends JFrame {
 	 * Método para obtener las materias
 	 */
 	private void getMaterias() {
-		jcbMateria.removeAllItems();
+		jcbSubject.removeAllItems();
 		List<Materia> l = MateriaController.findAll();
 		for (Materia o : l) {
-			jcbMateria.addItem(o);
+			jcbSubject.addItem(o);
 		}
 	}
 	
@@ -170,35 +193,10 @@ public class MainWindow extends JFrame {
 	 * Método para obtener los profesores
 	 */
 	private void getProfesores() {
-		jcbProfesor.removeAllItems();
+		jcbProfessor.removeAllItems();
 		List<Profesor> l = ProfesorController.findAll();
 		for (Profesor o : l) {
-			jcbProfesor.addItem(o);
-		}
-	}
-	
-	/**
-	 * Método para crear los paneles de estudiante
-	 */
-	private void createEstudiantePanels() {
-		p.clear();
-		panel.removeAll();
-		List<Estudiante> l = EstudianteController.findAll();
-		for (Estudiante o : l) {
-			EstudiantePanel e = new EstudiantePanel(o, (Profesor) jcbProfesor.getSelectedItem(), (Materia) jcbMateria.getSelectedItem());
-			p.add(e);
-			panel.add(e);
-		}
-		panel.repaint();
-		panel.revalidate();
-	}
-	
-	/**
-	 * Método para guardar los datos
-	 */
-	private void save() {
-		for (EstudiantePanel e : p) {
-			e.save();
+			jcbProfessor.addItem(o);
 		}
 	}
 	
